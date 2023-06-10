@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from "react";
 
+const api = "https://assets.breatheco.de/apis/fake/todos/user/julitar"
 
 //create your first component
 const Home = () => {
-	const [inputValue, setInputValue] = useState("")
-	const [ tarea, setTarea] = useState([])
+		const [ tarea, setTarea] = useState([])
+		const [inputValue, setInputValue] = useState("")
 
 	useEffect(() => {
-		fetch("https://assets.breatheco.de/apis/fake/todos/user/julitar", {
+		fetch(api, {
 			method: "GET"
 		  })
 		.then(response => response.json())
@@ -16,6 +17,37 @@ const Home = () => {
 		})
 		.catch(error => console.log(error));
 	}, [])	
+
+	const updateList = () => {
+		const options = {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(tarea)
+		}
+		
+		fetch(api, options)
+			.then(response => response.json())
+			.then(response => console.log(response))
+			.catch(error => console.error(error));
+	}
+
+	useEffect(() => {
+		updateList()
+	}, [tarea])
+
+	const addToDo = () => {
+		const newToDo = {label: inputValue, done: false}
+		const updateTarea = [...tarea]
+		updateTarea.push(newToDo)
+		setTarea(updateTarea)
+		setInputValue('')
+	}
+	
+	/*
+	const deleteToDo = (index) => {
+
+	}
+*/
 
 	return (
 		<>	
@@ -44,9 +76,9 @@ const Home = () => {
 								value={inputValue}
 								onKeyDown={(e) => {
 									if (e.key === 'Enter') {
-										if (inputValue.trim() !== "")
-										setTarea([...tarea, inputValue]);
-									 	setInputValue('');
+										if (inputValue.trim() !== "") {
+										addToDo();
+										}	
 									}
 								  }}
 								placeholder="Escribe una nueva tarea"></input>

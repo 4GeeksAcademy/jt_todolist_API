@@ -37,17 +37,36 @@ const Home = () => {
 
 	const addToDo = () => {
 		const newToDo = {label: inputValue, done: false}
-		const updateTarea = [...tarea]
-		updateTarea.push(newToDo)
-		setTarea(updateTarea)
+		const updatedTarea = [...tarea]
+		updatedTarea.push(newToDo)
+		setTarea(updatedTarea)
 		setInputValue('')
 	}
 	
-	/*
 	const deleteToDo = (index) => {
+		const updatedTarea = [...tarea];
+		updatedTarea.splice(index, 1);
+		setTarea(updatedTarea);
+	};
 
-	}
-*/
+	const deleteList = () => {
+		setTarea([]);
+
+		const options = {
+			method: 'DELETE',
+			headers: { 'Content-Type': 'application/json' },
+		}
+		
+		fetch(api, options)
+			.then(response => {
+				if (response.ok) {
+					console.log("Todas las tareas eliminadas de la API");
+					} else {
+						console.log("Error al eliminar todas las tareas de al API")
+					}
+				})
+			.catch(error => console.error("Error al comunicarse con la API:", error));
+	};
 
 	return (
 		<>	
@@ -88,12 +107,12 @@ const Home = () => {
 						{tarea.map((tarea, index) => (
 						<li className="list-group-item d-flex justify-content-between align-items-center shadow-lg mx-4" key={index}>
     						{tarea.label}
-							<button className="btn btn-outline-danger btn-sm" type="button"><i className="fas fa-trash"></i></button> 
+							<button onClick={()=> deleteToDo(index)} className="btn btn-outline-danger btn-sm" type="button"><i className="fas fa-trash"></i></button> 
 						</li>
 						))}
 					</ul>
 					<h1 className="fs-6 m-4 fw-light">Tareas pendientes: {tarea.length} </h1>
-					<button className="btn btn-outline-danger btn-sm mx-3" type="button">Eliminar todas las tareas</button>
+					<button onClick={()=> deleteList() } className="btn btn-outline-danger btn-sm mx-3" type="button">Eliminar lista de tareas</button>
 				</div>
 			</div>
 
